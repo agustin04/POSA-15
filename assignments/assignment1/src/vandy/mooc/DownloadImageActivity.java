@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 /**
  * An Activity that downloads an image, stores it in a local file on
@@ -14,7 +15,7 @@ public class DownloadImageActivity extends Activity {
      * Debugging tag used by the Android logger.
      */
     private final String TAG = getClass().getSimpleName();
-
+    public static final String EXTRA_PATH = "path";
     /**
      * Hook method called when a new instance of Activity is created.
      * One time initialization code goes here, e.g., UI layout and
@@ -27,10 +28,13 @@ public class DownloadImageActivity extends Activity {
         // Always call super class for necessary
         // initialization/implementation.
         // @@ TODO -- you fill in here.
+    	super.onCreate(savedInstanceState);
 
         // Get the URL associated with the Intent data.
         // @@ TODO -- you fill in here.
-
+    	//final Uri uri = getIntent().getData();
+    	
+    	final Uri uri = getIntent().getData();
         // Download the image in the background, create an Intent that
         // contains the path to the image file, and set this as the
         // result of the Activity.
@@ -41,5 +45,26 @@ public class DownloadImageActivity extends Activity {
         // methods should be called in the background thread.  See
         // http://stackoverflow.com/questions/20412871/is-it-safe-to-finish-an-android-activity-from-a-background-thread
         // for more discussion about this topic.
+    	Runnable downloadImage = new Runnable() {
+			@Override
+			public void run() {
+
+				final Uri dirPath = DownloadUtils.downloadImage(DownloadImageActivity.this, uri);
+
+				DownloadImageActivity.this.runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Intent intent = new Intent();
+						intent.putExtra(EXTRA_PATH, dirPath.toString());
+
+						DownloadImageActivity.this.setResult(Activity.RESULT_OK, intent);
+						finish();
+					}
+				});
+			}
+		};
+
+		Thread downloadThread = new Thread(downloadImage);
+		downloadThread.start();
     }
 }
