@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">DownloadImageViewer</string>
+    <string name="download_image_activity">DownLoadImageActivity</string>
+    <string name="download_image">Download Image</string>
+    <string name="defaultURL">http://http://www.zelda.com/universe/_img/gallery/minish_wp4_800.jpg</string>
+    <string name="enter_url">Enter URL</string>
+</resources>
